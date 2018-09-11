@@ -87,7 +87,33 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Variable Setup
+    closed = set()
+    root = (problem.getStartState(), 'Start', 1)
+    fringe = util.Stack()
+    fringe.push([root])  # fringe will be a stack of paths
+    direction = []
+
+    # DFS Graph Search
+    while True:
+        if not fringe.list:  # if fringe is empty, then return None
+            return None
+            print 'No solution exists'
+        currentPath = fringe.pop()  # pop current path out of the fringe
+        currentNode = currentPath[-1]  # current node is last node on current path
+        currentState = currentNode[0]  # current state is first element of current path
+        if problem.isGoalState(currentState):
+            break  # break loop when goal is found
+        if currentState not in closed:
+            closed.add(currentState)  # add current state to closed set
+            for childNode in problem.getSuccessors(currentState):
+                newPath = currentPath + [childNode]  # formulate new path
+                fringe.push(newPath)  # push new path to fringe
+
+    # Extract directions from nodes on currentPath
+    for node in currentPath[1:]:
+        direction.append(node[1])
+    return direction
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
