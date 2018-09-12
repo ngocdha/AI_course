@@ -89,7 +89,8 @@ def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     # Variable Setup
     closed = set()
-    root = (problem.getStartState(), 'Start', 0)
+    startState = problem.getStartState()
+    root = (startState, 'Start', 0)
     fringe = util.Stack()
     fringe.push([root])  # fringe will be a stack of paths
     actions = []
@@ -120,7 +121,8 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     # Variable Setup
     closed = set()
-    root = (problem.getStartState(), 'Start', 0)
+    startState = problem.getStartState()
+    root = (startState, 'Start', 0)
     fringe = util.Queue()
     fringe.push([root])  # fringe will be a queue of paths
     actions = []
@@ -151,7 +153,8 @@ def uniformCostSearch(problem):
     "*** YOUR CODE HERE ***"
     # Variable Setup
     closed = set()
-    root = (problem.getStartState(), 'Start', 0, 0)  # last element is total cost
+    startState = problem.getStartState()
+    root = (startState, 'Start', 0, 0)  # last element is total cost
     fringe = util.PriorityQueue()
     fringe.push([root], root[-1])  # fringe will be a queue of paths
     actions = []
@@ -189,7 +192,38 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Variable Setup
+    closed = set()
+    startState = problem.getStartState()
+    root = (startState, 'Start', 0, 0)  # last element is total cost
+    fringe = util.PriorityQueue()
+    fringe.push([root], root[-1] + heuristic(startState, problem))  # fringe will be a queue of paths
+    actions = []
+
+    # UCS Graph Search
+    while True:
+        if fringe.isEmpty():  # if fringe is empty, then return None
+            print 'No solution exists'
+            return None
+        currentPath = fringe.pop()  # pop current path out of the fringe
+        currentNode = currentPath[-1]  # current node is last node on current path
+        currentState = currentNode[0]  # current state is first element of current path
+        currentCost = currentNode[-1]
+        if problem.isGoalState(currentState):
+            break  # break loop when goal is found
+        if currentState not in closed:
+            closed.add(currentState)  # add current state to closed set
+            for childNode in problem.getSuccessors(currentState):
+                newState = childNode[0]
+                newCost = currentCost + childNode[-1]
+                newPriority = newCost + heuristic(newState, problem)
+                newPath = currentPath + [childNode + (newCost,)]
+                fringe.update(newPath, newPriority)  # update new path to fringe
+
+    # Extract directions from nodes on currentPath
+    for node in currentPath[1:]:
+        actions.append(node[1])
+    return actions
 
 
 # Abbreviations
