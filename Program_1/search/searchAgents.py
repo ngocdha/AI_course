@@ -1,3 +1,7 @@
+# Ngoc Ha
+# Program 1
+# CSCI 446 Fall 2018
+
 # searchAgents.py
 # ---------------
 # Licensing Information:  You are free to use or extend these projects for
@@ -289,7 +293,7 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
         self.costFn = costFn
-        self.startingGameState = startingGameState
+        self.startingGameState = startingGameState  # Prepare for mazeDistance()
 
     def getStartState(self):
         """
@@ -297,14 +301,14 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        return (self.startingPosition, ())
+        return (self.startingPosition, ())  # last element is a tuple of visited corners
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        isGoal = len(state[1]) == 4
+        isGoal = len(state[1]) == 4  # if all 4 corners are visted, return True
         return isGoal
 
     def getSuccessors(self, state):
@@ -329,17 +333,17 @@ class CornersProblem(search.SearchProblem):
 
             "*** YOUR CODE HERE ***"
             x,y = state[0]
-            dx, dy = Actions.directionToVector(action)
+            dx, dy = Actions.directionToVector(action)  # get next steps on x- and y-axis
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
-                nextPosition = (nextx, nexty)
-                goalCheck = state[1]
+                nextPosition = (nextx, nexty)  # if next step does not hit wall, then nextPosition
+                goalCheck = state[1]  # goalCheck is the tuple of visited corners
                 if nextPosition in self.corners and nextPosition not in goalCheck:
-                    goalCheck += (nextPosition,)
+                    goalCheck += (nextPosition,)  # If visit a new corner, add to goalCheck
                 nextState = (nextPosition, goalCheck)
                 cost = self.costFn(nextPosition)
                 successors.append( (nextState, action, cost) )
-                    
+                
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
@@ -374,12 +378,14 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    h = 0
+    h = 0  # initialize the heuristic
     currentPosition = state[0]
     for corner in corners:
         if corner not in state[1]:
-            #d = util.manhattanDistance(currentPosition, corner)
-            d = mazeDistance(currentPosition, corner, problem.startingGameState)
+            # d = util.manhattanDistance(currentPosition, corner)  # first try 2/3
+            # Heuristic is actual distance (mazeDistance) to the farthest food
+            # mazeDistance() inputs 2 positions and the game state
+            d = mazeDistance(currentPosition, corner, problem.startingGameState)  # second try 3/3
             if d > h:
                 h = d
     return h
@@ -495,12 +501,12 @@ def foodHeuristic(state, problem):
     #        dist = d
 
 
-    # Third attempt: calculate real distance between pacman and furthest food using mazeDistance function.
+    # Third attempt: real distance to furthest food using mazeDistance function.
     
-    currentState = state[0]
+    currentPosition = state[0]
     dist = 0
     for food in foodCoordinates:
-        d = mazeDistance(currentState, food, problem.startingGameState)
+        d = mazeDistance(currentPosition, food, problem.startingGameState)
         if d > dist:
             dist = d
     return dist
@@ -580,7 +586,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        return state in self.food.asList()
+        return state in self.food.asList()  # if state in food list then return True
 
 def mazeDistance(point1, point2, gameState):
     """

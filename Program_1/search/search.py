@@ -1,3 +1,7 @@
+# Ngoc Ha
+# Program 1
+# CSCI 446 Fall 2018
+
 # search.py
 # ---------
 # Licensing Information:  You are free to use or extend these projects for
