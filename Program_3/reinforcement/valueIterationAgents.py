@@ -45,7 +45,18 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
-
+        for i in range(iterations):
+            tempValues = util.Counter()
+            for state in mdp.getStates():
+                tempQValues = util.Counter()
+                if mdp.isTerminal(state) is True:
+                    pass                
+                else:
+                    possibleActions = mdp.getPossibleActions(state)
+                    for action in possibleActions:
+                        tempQValues[action] = self.computeQValueFromValues(state, action)
+                tempValues[state] = tempQValues[tempQValues.argMax()]
+            self.values = tempValues
 
     def getValue(self, state):
         """
@@ -60,7 +71,14 @@ class ValueIterationAgent(ValueEstimationAgent):
           value function stored in self.values.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        qValue = 0
+        transitions = self.mdp.getTransitionStatesAndProbs(state, action)
+        for transition in transitions:
+            nextState = transition[0]
+            probability = transition[1]
+            reward = self.mdp.getReward(state, action, nextState)
+            qValue += probability*(reward + self.discount*self.values[nextState])
+        return qValue
 
     def computeActionFromValues(self, state):
         """
@@ -72,7 +90,15 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        possibleActions = self.mdp.getPossibleActions(state)
+        optimalQValue = float('-inf')
+        optimalAction = None
+        for action in possibleActions:
+            qValue = self.computeQValueFromValues(state, action)
+            if qValue > optimalQValue:
+                optimalQValue = qValue
+                optimalAction = action
+        return optimalAction
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
