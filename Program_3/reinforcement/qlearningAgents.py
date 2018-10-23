@@ -65,6 +65,7 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
         tempQValues = util.Counter()
         legalActions = self.getLegalActions(state)
+        
         for action in legalActions:
             tempQValues[action] = self.getQValue(state, action)
         return tempQValues[tempQValues.argMax()]
@@ -79,6 +80,7 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
         tempQValues = util.Counter()
         legalActions = self.getLegalActions(state)
+
         for action in legalActions:
             tempQValues[action] = self.getQValue(state, action)
         if len(legalActions) == 0:
@@ -102,6 +104,7 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
         randAction = random.choice(legalActions)
         bestAction = self.computeActionFromQValues(state)
+
         if util.flipCoin(self.epsilon):
             return randAction
         else:
