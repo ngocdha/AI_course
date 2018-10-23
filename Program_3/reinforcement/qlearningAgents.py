@@ -1,3 +1,5 @@
+# Ngoc Ha
+# CSCI 446 Program 3
 # qlearningAgents.py
 # ------------------
 # Licensing Information:  You are free to use or extend these projects for
@@ -65,7 +67,7 @@ class QLearningAgent(ReinforcementAgent):
         "*** YOUR CODE HERE ***"
         tempQValues = util.Counter()
         legalActions = self.getLegalActions(state)
-        
+
         for action in legalActions:
             tempQValues[action] = self.getQValue(state, action)
         return tempQValues[tempQValues.argMax()]

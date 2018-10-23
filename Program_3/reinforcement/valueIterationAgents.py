@@ -1,3 +1,5 @@
+# Ngoc Ha
+# CSCI 446 Program 3
 # valueIterationAgents.py
 # -----------------------
 # Licensing Information:  You are free to use or extend these projects for
@@ -105,7 +107,7 @@ class ValueIterationAgent(ValueEstimationAgent):
             if qValue > optimalQValue:
                 optimalQValue = qValue
                 optimalAction = action
-                
+
         return optimalAction
 
     def getPolicy(self, state):
