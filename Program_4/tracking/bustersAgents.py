@@ -1,3 +1,7 @@
+# Ngoc Ha
+# CSCI 446 Fall 2018
+# Program 4
+#
 # bustersAgents.py
 # ----------------
 # Licensing Information:  You are free to use or extend these projects for
