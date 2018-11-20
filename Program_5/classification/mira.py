@@ -1,3 +1,6 @@
+# Ngoc Ha
+# CSCI 446 Program 5
+# 
 # mira.py
 # -------
 # Licensing Information:  You are free to use or extend these projects for
@@ -61,7 +64,32 @@ class MiraClassifier:
         representing a vector of values.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        bestWeights = None
+        mostCorrect = 0.0
+        weights = self.weights.copy()
+        for C in Cgrid:
+            self.weights = weights.copy()
+            for n in range(self.max_iterations):
+                for i in range(len(trainingData)):
+                    realLabel = trainingLabels[i]
+                    prediction = self.classify([trainingData[i]])[0]
+                    if realLabel != prediction:
+                        f = trainingData[i].copy()
+                        tau = min(C, ((self.weights[prediction] - self.weights[realLabel]) * f + 1.0) / (2.0 * (f * f)))
+                        f.divideAll(1.0 / tau)
+                        self.weights[realLabel] += f
+                        self.weights[prediction] -= f
+            
+            numCorrect = 0
+            guesses = self.classify(validationData)
+            for i, guess in enumerate(guesses):
+                numCorrect += (validationLabels[i] == guess and 1.0 or 0.0)
+
+            if numCorrect > mostCorrect:
+                mostCorrect = numCorrect
+                bestWeights = self.weights
+        
+        self.weights = bestWeights
 
     def classify(self, data ):
         """

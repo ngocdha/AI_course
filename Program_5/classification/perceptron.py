@@ -1,3 +1,6 @@
+# Ngoc Ha
+# CSCI 446 Program 5
+# 
 # perceptron.py
 # -------------
 # Licensing Information:  You are free to use or extend these projects for
@@ -32,8 +35,8 @@ class PerceptronClassifier:
             self.weights[label] = util.Counter() # this is the data-structure you should use
 
     def setWeights(self, weights):
-        assert len(weights) == len(self.legalLabels);
-        self.weights = weights;
+        assert len(weights) == len(self.legalLabels)
+        self.weights = weights
 
     def train( self, trainingData, trainingLabels, validationData, validationLabels ):
         """
@@ -55,7 +58,11 @@ class PerceptronClassifier:
             print "Starting iteration ", iteration, "..."
             for i in range(len(trainingData)):
                 "*** YOUR CODE HERE ***"
-                util.raiseNotDefined()
+                realLabel = trainingLabels[i]
+                prediction = self.classify([trainingData[i]])[0]
+                if realLabel != prediction:
+                    self.weights[realLabel] = self.weights[realLabel] + trainingData[i]
+                    self.weights[prediction] = self.weights[prediction] - trainingData[i]
 
     def classify(self, data ):
         """
@@ -80,6 +87,8 @@ class PerceptronClassifier:
         featuresWeights = []
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        sortedWeights = self.weights[label].sortedKeys()
+        for i in range(100):
+            featuresWeights.append(sortedWeights[i])
 
         return featuresWeights

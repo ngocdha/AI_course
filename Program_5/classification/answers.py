@@ -1,3 +1,6 @@
+# Ngoc Ha
+# CSCI 446 Program 5
+# 
 # answers.py
 # ----------
 # Licensing Information:  You are free to use or extend these projects for
@@ -14,3 +17,4 @@
 
 def q2():
     "*** YOUR CODE HERE ***"
+    return 'a'

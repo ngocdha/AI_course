@@ -1,3 +1,6 @@
+# Ngoc Ha
+# CSCI 446 Program 5
+# 
 # dataClassifier.py
 # -----------------
 # Licensing Information:  You are free to use or extend these projects for
@@ -72,13 +75,49 @@ def enhancedFeatureExtractorDigit(datum):
     for this datum (datum is of type samples.Datum).
 
     ## DESCRIBE YOUR ENHANCED FEATURES HERE...
-
+    1. (Number of nonzero pixels > 300)
+    2. (Estimated aspect ratio of the digit < 0.69)
+    3. (Number of breaks in horizontal and vertical spaces > 200)
     ##
     """
     features =  basicFeatureExtractorDigit(datum)
 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    pixels = datum.getPixels()
+    breaks = 0
+    nonzero = 0
+    firstLeft = None
+    for i in range(len(pixels)):
+        for j in range(1,len(pixels[i])):
+            if pixels[i][j] != 0:
+                nonzero += 1
+                if not firstLeft or j < firstLeft:
+                    firstLeft = j
+            if pixels[i][j] != pixels[i][j - 1]:
+                breaks += 1
+
+    width = len(pixels[0]) - (firstLeft * 2)
+    firstTop = None
+    for j in range(len(pixels[0])):
+        col = [p[j] for p in pixels]
+        for i in range(1,len(col)):
+            if col[j] != 0:
+                nonzero += 1
+                if not firstTop or i < firstTop:
+                    firstTop = i
+            if col[i] != col[i - 1]:
+                breaks += 1
+
+    height = len(pixels) - (firstTop * 2)
+    aspectRatio = float(width) / height
+    for n in range(5):
+        features[n] = breaks > 200 and 1.0 or 0.0
+
+    for n in range(10):
+        features[(n + 1) * 10] = aspectRatio < 0.69
+    
+    for n in range(5):
+        features[-n] = nonzero > 300 and 1.0 or 0.0
 
     return features
 
@@ -124,7 +163,31 @@ def enhancedPacmanFeatures(state, action):
     """
     features = util.Counter()
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    successor = state.generateSuccessor(0, action)
+    pac_pos = successor.getPacmanPosition()
+    ghosts = successor.getGhostPositions()
+    capsules = successor.getCapsules()
+    state_food = state.getFood()
+    food = [(x, y) for x, row in enumerate(state_food) for y, food in enumerate(row) if food]
+
+    nearest_ghosts = sorted([util.manhattanDistance(pac_pos, i) for i in ghosts])
+    features["nearest_ghost"] = nearest_ghosts[0] * 1.0
+    for i in xrange(min(len(nearest_ghosts), 1)):
+        features[("ghost", i)] = 5 / (0.1 + nearest_ghosts[i])
+
+    nearest_caps = sorted([util.manhattanDistance(pac_pos, i) for i in capsules])
+    for i in xrange(min(len(nearest_caps), 1)):
+        features[("capsule", i)] = 15 / (1 + nearest_caps[i])
+
+    nearest_food = sorted([util.manhattanDistance(pac_pos, i) for i in food])
+    for i, weight in zip(xrange(min(len(nearest_food), 5)), [1.3, 0.8] + [0.9] * 3):
+        features[("food", i)] = weight * nearest_food[i]
+
+    features["capsule count"] = len(capsules) * 10
+    features["win"] = state.isWin()
+    features["lose"] = state.isLose()
+    features["score"] = state.getScore() * 10
+
     return features
 
 

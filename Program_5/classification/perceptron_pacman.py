@@ -1,3 +1,6 @@
+# Ngoc Ha
+# CSCI 446 Program 5
+# 
 # perceptron_pacman.py
 # --------------------
 # Licensing Information:  You are free to use or extend these projects for
@@ -48,6 +51,12 @@ class PerceptronClassifierPacman(PerceptronClassifier):
 
         for iteration in range(self.max_iterations):
             print "Starting iteration ", iteration, "..."
-            for i in range(len(trainingData)):
+            for _ in range(len(trainingData)):
                 "*** YOUR CODE HERE ***"
-                util.raiseNotDefined()
+                for data, realLabel in zip(trainingData, trainingLabels):
+                    for label in data[1]:
+                        for feature, value in data[0][label].items():
+                            if label == realLabel:
+                                self.weights[feature] += value
+                            else:
+                                self.weights[feature] -= value
